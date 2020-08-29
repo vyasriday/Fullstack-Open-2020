@@ -2,6 +2,6 @@
 
 **Submissions for the Helsinki University's Fullstack course.**
 
-[Course Page](https://fullstackopen.com)
+[Course Page](https://fullstackopen.com/en)
 
 [University Page](https://studies.cs.helsinki.fi/fullstackopen2020)
