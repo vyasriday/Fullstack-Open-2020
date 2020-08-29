@@ -13,16 +13,21 @@ const Button = ({ text, handleClick }) => (
 	</button>
 );
 
-const Statistics = ({ good, neutral, bad }) => (
-	<>
-		<p>good {good}</p>
-		<p>neutral {neutral}</p>
-		<p>bad {bad}</p>
-		<p>all {good + neutral + bad}</p>
-		<p>average {getAverage({ good, neutral, bad }) || 0}</p>
-		<p>positive {`${good / getTotal({ good, neutral, bad }) || 0}%`} </p>
-	</>
-);
+const Statistics = ({ good, neutral, bad }) => {
+	if (good || neutral || bad) {
+		return <p>No Feedback given</p>;
+	}
+	return (
+		<>
+			<p>good {good}</p>
+			<p>neutral {neutral}</p>
+			<p>bad {bad}</p>
+			<p>all {good + neutral + bad}</p>
+			<p>average {getAverage({ good, neutral, bad }) || 0}</p>
+			<p>positive {`${good / getTotal({ good, neutral, bad }) || 0}%`} </p>
+		</>
+	);
+};
 const App = () => {
 	const [good, setGood] = useState(0);
 	const [neutral, setNeutral] = useState(0);
