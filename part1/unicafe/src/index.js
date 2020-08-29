@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
+const getAverage = ({ good, neutral, bad }) =>
+	(good + neutral * 0 + bad * -1) / getTotal({ good, neutral, bad });
+
+const getTotal = ({ good, neutral, bad }) => good + neutral + bad;
 const Display = ({ text }) => <h2>{text}</h2>;
 
 const Button = ({ text, handleClick }) => (
@@ -14,6 +18,9 @@ const Statistics = ({ good, neutral, bad }) => (
 		<p>good {good}</p>
 		<p>neutral {neutral}</p>
 		<p>bad {bad}</p>
+		<p>all {good + neutral + bad}</p>
+		<p>average {getAverage({ good, neutral, bad }) || 0}</p>
+		<p>positive {`${good / getTotal({ good, neutral, bad }) || 0}%`} </p>
 	</>
 );
 const App = () => {
