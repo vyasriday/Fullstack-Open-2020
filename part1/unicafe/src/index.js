@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import { getTotal, getAverage } from "./helpers";
 
-const getAverage = ({ good, neutral, bad }) =>
-	(good + neutral * 0 + bad * -1) / getTotal({ good, neutral, bad });
-
-const getTotal = ({ good, neutral, bad }) => good + neutral + bad;
 const Display = ({ text }) => <h2>{text}</h2>;
 
 const Button = ({ text, handleClick }) => (
@@ -13,21 +10,34 @@ const Button = ({ text, handleClick }) => (
 	</button>
 );
 
+const Statistic = ({ text, value }) => (
+	<p>
+		{text} {value}
+	</p>
+);
+
 const Statistics = ({ good, neutral, bad }) => {
-	if (good || neutral || bad) {
+	if (!good && !neutral && !bad) {
 		return <p>No Feedback given</p>;
 	}
 	return (
 		<>
-			<p>good {good}</p>
-			<p>neutral {neutral}</p>
-			<p>bad {bad}</p>
-			<p>all {good + neutral + bad}</p>
-			<p>average {getAverage({ good, neutral, bad }) || 0}</p>
-			<p>positive {`${good / getTotal({ good, neutral, bad }) || 0}%`} </p>
+			<Statistic text='good' value={good} />
+			<Statistic text='neutral' value={neutral} />
+			<Statistic text='bad' value={bad} />
+			<Statistic text='all' value={good + neutral + bad} />
+			<Statistic
+				text='average'
+				value={getAverage({ good, neutral, bad }) || 0}
+			/>
+			<Statistic
+				text='positive'
+				value={`${good / getTotal({ good, neutral, bad }) || 0}%`}
+			/>
 		</>
 	);
 };
+
 const App = () => {
 	const [good, setGood] = useState(0);
 	const [neutral, setNeutral] = useState(0);
