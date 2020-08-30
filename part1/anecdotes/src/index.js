@@ -1,19 +1,39 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
+const Button = ({ text, onClick }) => (
+	<button type='button' onClick={onClick}>
+		{text}
+	</button>
+);
+
+function generateRandomIndex(length) {
+	return Math.floor(Math.random() * length) + 1;
+}
+
 const App = (props) => {
 	const [selected, setSelected] = useState(0);
-
+	const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0));
 	function handleClick() {
-		const randomIndex = Math.floor(Math.random() * (anecdotes.length - 1)) + 1;
+		let randomIndex = generateRandomIndex(anecdotes.length - 1);
+		while (randomIndex === selected) {
+			randomIndex = generateRandomIndex(anecdotes.length - 1);
+		}
 		setSelected(randomIndex);
 	}
+
+	function handleUpvote() {
+		const totalVotes = [...votes];
+		totalVotes[selected] = totalVotes[selected] + 1;
+		setVotes(totalVotes);
+	}
+
 	return (
 		<div>
 			<p>{props.anecdotes[selected]}</p>
-			<button type='button' onClick={handleClick}>
-				next anecdote
-			</button>
+			<p>has {votes[selected]} votes.</p>
+			<Button onClick={handleUpvote} text='vote' />
+			<Button onClick={handleClick} text='next anecdote' />
 		</div>
 	);
 };
@@ -26,5 +46,4 @@ const anecdotes = [
 	"Premature optimization is the root of all evil.",
 	"Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
 ];
-
 ReactDOM.render(<App anecdotes={anecdotes} />, document.getElementById("root"));
