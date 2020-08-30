@@ -7,9 +7,7 @@ const Button = ({ text, onClick }) => (
 	</button>
 );
 
-function generateRandomIndex(length) {
-	return Math.floor(Math.random() * length) + 1;
-}
+const Header = ({ text }) => <h2>{text}</h2>;
 
 const App = (props) => {
 	const [selected, setSelected] = useState(0);
@@ -30,10 +28,18 @@ const App = (props) => {
 
 	return (
 		<div>
-			<p>{props.anecdotes[selected]}</p>
-			<p>has {votes[selected]} votes.</p>
-			<Button onClick={handleUpvote} text='vote' />
-			<Button onClick={handleClick} text='next anecdote' />
+			<div className='anecdote-of-day'>
+				<Header text='Anecdote of the day' />
+				<p>{props.anecdotes[selected]}</p>
+				<p>has {votes[selected]} votes.</p>
+				<Button onClick={handleUpvote} text='vote' />
+				<Button onClick={handleClick} text='next anecdote' />
+			</div>
+			<div className='top-upvoted'>
+				<Header text='Anecdote with most votes' />
+				<p>{props.anecdotes[getMaximumUpvotedAnecdoteIndex(votes)]}</p>
+				<p>has {votes[getMaximumUpvotedAnecdoteIndex(votes)]} votes.</p>
+			</div>
 		</div>
 	);
 };
@@ -47,3 +53,19 @@ const anecdotes = [
 	"Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
 ];
 ReactDOM.render(<App anecdotes={anecdotes} />, document.getElementById("root"));
+
+function generateRandomIndex(length) {
+	return Math.floor(Math.random() * length) + 1;
+}
+
+function getMaximumUpvotedAnecdoteIndex(votes) {
+	let maxIndex = 0;
+	let max = votes[0];
+	votes.forEach((vote, index) => {
+		if (vote > max) {
+			max = vote;
+			maxIndex = index;
+		}
+	});
+	return maxIndex;
+}
