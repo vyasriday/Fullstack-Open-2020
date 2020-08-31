@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 
+function checkIfNameAlreadyExists(name, persons) {
+	return persons.some((person) => person.name === name);
+}
+
 const App = () => {
 	const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
 	const [newName, setNewName] = useState("");
 
 	function handleSubmit(event) {
 		event.preventDefault();
-		setPersons([...persons, { name: newName }]);
-		setNewName("");
+		if (!checkIfNameAlreadyExists(newName, persons)) {
+			setPersons([...persons, { name: newName }]);
+			setNewName("");
+			return;
+		}
+		alert(`${newName} is already added to the phonebook.`);
 	}
 
 	function handleName(event) {
