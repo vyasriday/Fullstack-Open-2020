@@ -4,12 +4,13 @@ const Header = ({ name }) => {
 	return <h1>{name}</h1>;
 };
 
-const Total = ({ course }) => {
-	const sum =
-		course.parts[0].exercises +
-		course.parts[1].exercises +
-		course.parts[2].exercises;
-	return <p>Number of exercises {sum}</p>;
+const Total = ({ parts }) => {
+	const sum = parts[0].exercises + parts[1].exercises + parts[2].exercises;
+	return (
+		<p>
+			<strong>Number of exercises {sum}</strong>
+		</p>
+	);
 };
 
 const Part = ({ part: { name, exercises } }) => {
@@ -38,6 +39,7 @@ const Course = ({ course }) => {
 			{parts.map((part) => (
 				<Part part={part} />
 			))}
+			<Total parts={parts} />
 		</React.Fragment>
 	);
 };
