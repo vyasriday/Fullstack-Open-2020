@@ -5,14 +5,15 @@ function checkIfNameAlreadyExists(name, persons) {
 }
 
 const App = () => {
-	const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
+	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState("");
-
+	const [phone, setPhone] = useState("");
 	function handleSubmit(event) {
 		event.preventDefault();
 		if (!checkIfNameAlreadyExists(newName, persons)) {
-			setPersons([...persons, { name: newName }]);
+			setPersons([...persons, { name: newName, phone }]);
 			setNewName("");
+			setPhone("");
 			return;
 		}
 		alert(`${newName} is already added to the phonebook.`);
@@ -20,6 +21,10 @@ const App = () => {
 
 	function handleName(event) {
 		setNewName(event.target.value);
+	}
+
+	function handlePhone(event) {
+		setPhone(event.target.value);
 	}
 
 	return (
@@ -30,12 +35,17 @@ const App = () => {
 					name: <input type='text' value={newName} onChange={handleName} />
 				</div>
 				<div>
+					phone: <input type='text' value={phone} onChange={handlePhone} />
+				</div>
+				<div>
 					<button type='submit'>add</button>
 				</div>
 			</form>
 			<h2>Numbers</h2>
 			{persons.map((person, index) => (
-				<p key={index}>{person.name}</p>
+				<p key={index}>
+					{person.name} {person.phone}
+				</p>
 			))}
 		</div>
 	);
