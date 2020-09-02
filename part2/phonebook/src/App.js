@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Filter = ({ value, handleFilter }) => {
 	return (
@@ -17,8 +18,8 @@ const PersonForm = (props) => {
 				<input type='text' value={props.newName} onChange={props.handleName} />
 			</div>
 			<div>
-				phone:{' '}
-				<input type='text' value={props.phone} onChange={props.handlePhone} />
+				number:{' '}
+				<input type='text' value={props.number} onChange={props.handlePhone} />
 			</div>
 			<div>
 				<button type='submit'>add</button>
@@ -29,7 +30,7 @@ const PersonForm = (props) => {
 
 const Person = ({ person }) => (
 	<p>
-		{person.name} {person.phone}
+		{person.name} {person.number}
 	</p>
 );
 
@@ -37,26 +38,32 @@ const App = () => {
 	const [persons, setPersons] = useState([]);
 	const [filteredPersons, setFilteredPersons] = useState([]);
 	const [newName, setNewName] = useState('');
-	const [phone, setPhone] = useState('');
+	const [number, setNumber] = useState('');
 	const [filter, setFilter] = useState('');
+
+	useEffect(() => {
+		axios.get('http://localhost:3001/persons').then((response) => {
+			setPersons(response.data);
+		});
+	}, []);
 
 	function handleName(event) {
 		setNewName(event.target.value);
 	}
 
-	function handlePhone(event) {
-		setPhone(event.target.value);
+	function handleNumber(event) {
+		setNumber(event.target.value);
 	}
 
 	function handleSubmit(event) {
 		event.preventDefault();
 		if (!checkIfNameAlreadyExists(newName, persons)) {
-			setPersons([...persons, { name: newName, phone }]);
+			setPersons([...persons, { name: newName, number }]);
 			setNewName('');
-			setPhone('');
+			setNumber('');
 			return;
 		}
-		alert(`${newName} is already added to the phonebook.`);
+		alert(`${newName} is already added to the numberbook.`);
 	}
 
 	function handleFilter(event) {
@@ -69,15 +76,15 @@ const App = () => {
 
 	return (
 		<div>
-			<h2>Phonebook</h2>
+			<h2>numberbook</h2>
 			<Filter value={filter} handleFilter={handleFilter} />
 			<h3>Add a new</h3>
 			<PersonForm
 				handleSubmit={handleSubmit}
 				newName={newName}
-				phone={phone}
+				number={number}
 				handleName={handleName}
-				handlePhone={handlePhone}
+				handlenumber={handleNumber}
 			/>
 			<h2>Numbers</h2>
 
