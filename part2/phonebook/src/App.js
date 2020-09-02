@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 const Filter = ({ value, handleFilter }) => {
 	return (
@@ -13,11 +13,11 @@ const PersonForm = (props) => {
 	return (
 		<form onSubmit={props.handleSubmit}>
 			<div>
-				name:{" "}
+				name:{' '}
 				<input type='text' value={props.newName} onChange={props.handleName} />
 			</div>
 			<div>
-				phone:{" "}
+				phone:{' '}
 				<input type='text' value={props.phone} onChange={props.handlePhone} />
 			</div>
 			<div>
@@ -36,14 +36,15 @@ const Person = ({ person }) => (
 const App = () => {
 	const [persons, setPersons] = useState([
 		{
-			name: "Hridayesh",
+			name: 'Hridayesh',
 			phone: 8128128182,
 		},
 	]);
+	// Note a good idea as it's not reinitialized when persons get updated.
 	const [filteredPersons, setFilteredPersons] = useState(persons);
-	const [newName, setNewName] = useState("");
-	const [phone, setPhone] = useState("");
-	const [filter, setFilter] = useState("");
+	const [newName, setNewName] = useState('');
+	const [phone, setPhone] = useState('');
+	const [filter, setFilter] = useState('');
 
 	function handleName(event) {
 		setNewName(event.target.value);
@@ -57,9 +58,8 @@ const App = () => {
 		event.preventDefault();
 		if (!checkIfNameAlreadyExists(newName, persons)) {
 			setPersons([...persons, { name: newName, phone }]);
-			setFilteredPersons([...filteredPersons, { name: newName, phone }]);
-			setNewName("");
-			setPhone("");
+			setNewName('');
+			setPhone('');
 			return;
 		}
 		alert(`${newName} is already added to the phonebook.`);
@@ -80,15 +80,19 @@ const App = () => {
 			<h3>Add a new</h3>
 			<PersonForm
 				handleSubmit={handleSubmit}
-				person={newName}
+				newName={newName}
 				phone={phone}
 				handleName={handleName}
 				handlePhone={handlePhone}
 			/>
 			<h2>Numbers</h2>
-			{filteredPersons.map((person, index) => (
-				<Person key={index} person={person} />
-			))}
+
+			{filter &&
+				filteredPersons.map((person, index) => (
+					<Person key={index} person={person} />
+				))}
+			{!filter &&
+				persons.map((person, index) => <Person key={index} person={person} />)}
 		</div>
 	);
 };
