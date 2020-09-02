@@ -34,14 +34,8 @@ const Person = ({ person }) => (
 );
 
 const App = () => {
-	const [persons, setPersons] = useState([
-		{
-			name: 'Hridayesh',
-			phone: 8128128182,
-		},
-	]);
-	// Note a good idea as it's not reinitialized when persons get updated.
-	const [filteredPersons, setFilteredPersons] = useState(persons);
+	const [persons, setPersons] = useState([]);
+	const [filteredPersons, setFilteredPersons] = useState([]);
 	const [newName, setNewName] = useState('');
 	const [phone, setPhone] = useState('');
 	const [filter, setFilter] = useState('');
