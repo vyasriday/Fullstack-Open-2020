@@ -5,7 +5,7 @@ const App = () => {
 	const [filter, setFilter] = useState('');
 	const [countries, setCountries] = useState([]);
 	const [filteredCountries, setFilteredCountries] = useState([]);
-
+	const [index, setIndex] = useState();
 	function handleFilter(e) {
 		setFilter(e.target.value);
 	}
@@ -35,26 +35,41 @@ const App = () => {
 			)}
 			{filteredCountries.length <= 10 &&
 				filteredCountries.length > 1 &&
-				filteredCountries.map((country) => <p>{country.name}</p>)}
+				filteredCountries.map((country, i) => {
+					return (
+						<div key={i}>
+							<p>
+								<span>{country.name}</span>
+								<button type='button' onClick={() => setIndex(i)}>
+									show
+								</button>
+							</p>
+						</div>
+					);
+				})}
 			{filteredCountries.length === 1 && (
-				<React.Fragment>
-					<h2>{filteredCountries[0].name}</h2>
-					<p>capital {filteredCountries[0].capital}</p>
-					<p>population {filteredCountries.population}</p>
-					<h3>languages</h3>
-					<ul>
-						{filteredCountries[0].languages.map((language) => (
-							<li key={language.name}>{language.name}</li>
-						))}
-					</ul>
-					<img
-						style={{ height: '50px', width: '50px' }}
-						src={filteredCountries[0].flag}
-					/>
-				</React.Fragment>
+				<DisplayCountry country={filteredCountries[0]} />
+			)}
+			{filteredCountries.length !== 1 && typeof index === 'number' && (
+				<DisplayCountry country={filteredCountries[index]} />
 			)}
 		</div>
 	);
 };
+
+const DisplayCountry = ({ country }) => (
+	<React.Fragment>
+		<h2>{country.name}</h2>
+		<p>capital {country.capital}</p>
+		<p>population {country.population}</p>
+		<h3>languages</h3>
+		<ul>
+			{country.languages.map((language) => (
+				<li key={language.name}>{language.name}</li>
+			))}
+		</ul>
+		<img style={{ height: '50px', width: '50px' }} src={country.flag} />
+	</React.Fragment>
+);
 
 export default App;
