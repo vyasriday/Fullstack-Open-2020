@@ -18,7 +18,7 @@ const PersonForm = (props) => {
 				<input type='text' value={props.newName} onChange={props.handleName} />
 			</div>
 			<div>
-				number:{' '}
+				number:
 				<input type='text' value={props.number} onChange={props.handlePhone} />
 			</div>
 			<div>
@@ -58,19 +58,28 @@ const App = () => {
 		setNewName(event.target.value);
 	}
 
-	function handleNumber(event) {
+	function handlePhone(event) {
 		setNumber(event.target.value);
 	}
 
 	function handleSubmit(event) {
 		event.preventDefault();
-		if (!checkIfNameAlreadyExists(newName, persons)) {
-			setPersons([...persons, { name: newName, number }]);
-			setNewName('');
-			setNumber('');
+		if (checkIfNameAlreadyExists(newName, persons)) {
+			alert(`${newName} is already added to the numberbook.`);
 			return;
 		}
-		alert(`${newName} is already added to the numberbook.`);
+		const newPerson = {
+			name: newName,
+			number,
+		};
+		axios
+			.post('http://localhost:3001/persons', newPerson)
+			.then((response) => response.data)
+			.then((person) => {
+				setPersons([...persons, person]);
+				setNewName('');
+				setNumber('');
+			});
 	}
 
 	function handleFilter(event) {
@@ -87,7 +96,7 @@ const App = () => {
 				newName={newName}
 				number={number}
 				handleName={handleName}
-				handlenumber={handleNumber}
+				handlePhone={handlePhone}
 			/>
 			<h2>Numbers</h2>
 
