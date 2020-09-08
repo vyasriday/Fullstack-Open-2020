@@ -36,8 +36,8 @@ const Person = ({ person, handleDelete }) => (
 	</p>
 );
 
-const Notification = ({ message }) => (
-	<div className='notification'>{message}</div>
+const Notification = ({ message, className }) => (
+	<div className={className}>{message}</div>
 );
 
 const App = () => {
@@ -46,7 +46,9 @@ const App = () => {
 	const [newName, setNewName] = useState('');
 	const [number, setNumber] = useState('');
 	const [filter, setFilter] = useState('');
-	const [notificationMessage, setNotificationMessage] = useState(null);
+	const [successMessage, setSuccessMessage] = useState(null);
+	const [errorMessage, setErroMessage] = useState(null);
+
 	useEffect(() => {
 		personsService.getAll().then((persons) => {
 			setPersons(persons);
@@ -87,7 +89,12 @@ const App = () => {
 						);
 						setNewName('');
 						setNumber('');
-						setNotificationMessage(`Updated phone number for ${person.name}`);
+						setSuccessMessage(`Updated phone number for ${person.name}`);
+						hideNotification();
+					})
+					.catch((err) => {
+						setSuccessMessage(null);
+						setErroMessage(`updating ${newName} failed`);
 						hideNotification();
 					});
 			}
@@ -97,13 +104,20 @@ const App = () => {
 			name: newName,
 			number,
 		};
-		personsService.addPerson(newPerson).then((person) => {
-			setPersons([...persons, person]);
-			setNewName('');
-			setNumber('');
-			setNotificationMessage(`Added ${newName}`);
-			hideNotification();
-		});
+		personsService
+			.addPerson(newPerson)
+			.then((person) => {
+				setPersons([...persons, person]);
+				setNewName('');
+				setNumber('');
+				setSuccessMessage(`Added ${newName}`);
+				hideNotification();
+			})
+			.catch((err) => {
+				setSuccessMessage(null);
+				setErroMessage(`adding ${newName} failed`);
+				hideNotification();
+			});
 	}
 
 	function handleFilter(event) {
@@ -114,20 +128,32 @@ const App = () => {
 		const person = persons.find((person) => person.id === id);
 		const shouldDelete = window.confirm(`Delete ${person.name}?`);
 		if (shouldDelete) {
-			personsService.deletePerson(id).then((response) => {
-				setPersons(persons.filter((person) => person.id !== id));
-			});
+			personsService
+				.deletePerson(id)
+				.then((response) => {
+					setPersons(persons.filter((person) => person.id !== id));
+				})
+				.catch((err) => {
+					setSuccessMessage(null);
+					setErroMessage(`deleting ${person.name} failed`);
+					hideNotification();
+				});
 		}
 	}
 
 	function hideNotification() {
-		setTimeout(() => setNotificationMessage(null), 5000);
+		setTimeout(() => setSuccessMessage(null), 5000);
 	}
 
 	return (
 		<div>
 			<h1>Numberbook</h1>
-			{notificationMessage && <Notification message={notificationMessage} />}
+			{successMessage && (
+				<Notification message={successMessage} className='success' />
+			)}
+			{errorMessage && (
+				<Notification message={errorMessage} className='error' />
+			)}
 			<Filter value={filter} handleFilter={handleFilter} />
 			<h3>Add a new</h3>
 			<PersonForm
