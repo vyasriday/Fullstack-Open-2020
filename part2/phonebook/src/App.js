@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import personsService from './services/persons.';
+import Axios from 'axios';
 const Filter = ({ value, handleFilter }) => {
 	return (
 		<React.Fragment>
@@ -27,9 +28,10 @@ const PersonForm = (props) => {
 	);
 };
 
-const Person = ({ person }) => (
+const Person = ({ person, handleDelete }) => (
 	<p>
 		{person.name} {person.number}
+		<button onClick={handleDelete}>delete</button>
 	</p>
 );
 
@@ -82,6 +84,18 @@ const App = () => {
 		setFilter(event.target.value);
 	}
 
+	function handleDelete(id) {
+		const person = persons.find((person) => person.id === id);
+		const shouldDelete = window.confirm(`Delete ${person.name}?`);
+		if (shouldDelete) {
+			personsService
+				.deletePerson(id)
+				.then((response) =>
+					setPersons(persons.filter((person) => person.id !== id))
+				);
+		}
+	}
+
 	return (
 		<div>
 			<h2>numberbook</h2>
@@ -98,10 +112,20 @@ const App = () => {
 
 			{filter &&
 				filteredPersons.map((person, index) => (
-					<Person key={index} person={person} />
+					<Person
+						key={person.id}
+						person={person}
+						handleDelete={() => handleDelete(person.id)}
+					/>
 				))}
 			{!filter &&
-				persons.map((person, index) => <Person key={index} person={person} />)}
+				persons.map((person, index) => (
+					<Person
+						key={person.id}
+						person={person}
+						handleDelete={() => handleDelete(person.id)}
+					/>
+				))}
 		</div>
 	);
 };
