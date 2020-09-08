@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import personsService from './services/persons.';
-import Axios from 'axios';
+import './index.css';
+
 const Filter = ({ value, handleFilter }) => {
 	return (
 		<React.Fragment>
@@ -35,13 +36,17 @@ const Person = ({ person, handleDelete }) => (
 	</p>
 );
 
+const Notification = ({ message }) => (
+	<div className='notification'>{message}</div>
+);
+
 const App = () => {
 	const [persons, setPersons] = useState([]);
 	const [filteredPersons, setFilteredPersons] = useState([]);
 	const [newName, setNewName] = useState('');
 	const [number, setNumber] = useState('');
 	const [filter, setFilter] = useState('');
-
+	const [notificationMessage, setNotificationMessage] = useState(null);
 	useEffect(() => {
 		personsService.getAll().then((persons) => {
 			setPersons(persons);
@@ -82,6 +87,8 @@ const App = () => {
 						);
 						setNewName('');
 						setNumber('');
+						setNotificationMessage(`Updated phone number for ${person.name}`);
+						hideNotification();
 					});
 			}
 			return;
@@ -94,6 +101,8 @@ const App = () => {
 			setPersons([...persons, person]);
 			setNewName('');
 			setNumber('');
+			setNotificationMessage(`Added ${newName}`);
+			hideNotification();
 		});
 	}
 
@@ -105,17 +114,20 @@ const App = () => {
 		const person = persons.find((person) => person.id === id);
 		const shouldDelete = window.confirm(`Delete ${person.name}?`);
 		if (shouldDelete) {
-			personsService
-				.deletePerson(id)
-				.then((response) =>
-					setPersons(persons.filter((person) => person.id !== id))
-				);
+			personsService.deletePerson(id).then((response) => {
+				setPersons(persons.filter((person) => person.id !== id));
+			});
 		}
+	}
+
+	function hideNotification() {
+		setTimeout(() => setNotificationMessage(null), 5000);
 	}
 
 	return (
 		<div>
-			<h2>numberbook</h2>
+			<h1>Numberbook</h1>
+			{notificationMessage && <Notification message={notificationMessage} />}
 			<Filter value={filter} handleFilter={handleFilter} />
 			<h3>Add a new</h3>
 			<PersonForm
