@@ -1,44 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import Filter from './components/Filter';
+import PersonForm from './components/PersonForm';
+import Person from './components/Person.js';
+import Notification from './components/Notification';
 import personsService from './services/persons.';
 import './index.css';
-
-const Filter = ({ value, handleFilter }) => {
-	return (
-		<React.Fragment>
-			<label>Filter shown with</label>
-			<input type='text' value={value} onChange={handleFilter} />
-		</React.Fragment>
-	);
-};
-
-const PersonForm = (props) => {
-	return (
-		<form onSubmit={props.handleSubmit}>
-			<div>
-				name:{' '}
-				<input type='text' value={props.newName} onChange={props.handleName} />
-			</div>
-			<div>
-				number:
-				<input type='text' value={props.number} onChange={props.handlePhone} />
-			</div>
-			<div>
-				<button type='submit'>add</button>
-			</div>
-		</form>
-	);
-};
-
-const Person = ({ person, handleDelete }) => (
-	<p>
-		{person.name} {person.number}
-		<button onClick={handleDelete}>delete</button>
-	</p>
-);
-
-const Notification = ({ message, className }) => (
-	<div className={className}>{message}</div>
-);
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
