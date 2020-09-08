@@ -47,6 +47,13 @@ const App = () => {
 		});
 	}, []);
 
+	useEffect(() => {
+		const filteredPersons = persons.filter((person) =>
+			person.name.toLowerCase().includes(filter.toLowerCase())
+		);
+		setFilteredPersons(filteredPersons);
+	}, [filter]);
+
 	function handleName(event) {
 		setNewName(event.target.value);
 	}
@@ -68,10 +75,6 @@ const App = () => {
 
 	function handleFilter(event) {
 		setFilter(event.target.value);
-		const filteredPersons = persons.filter((person) =>
-			person.name.toLowerCase().includes(filter.toLowerCase())
-		);
-		setFilteredPersons(filteredPersons);
 	}
 
 	return (
