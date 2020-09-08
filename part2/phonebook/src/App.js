@@ -66,7 +66,24 @@ const App = () => {
 	function handleSubmit(event) {
 		event.preventDefault();
 		if (checkIfNameAlreadyExists(newName, persons)) {
-			alert(`${newName} is already added to the numberbook.`);
+			const shouldUpdateNumber = window.confirm(
+				`${newName} is already added to phonebook, replace the old number with a new one?`
+			);
+			if (shouldUpdateNumber) {
+				const person = persons.find((person) => person.name === newName);
+				const { id } = person;
+				personsService
+					.updatePerson(id, { ...person, number })
+					.then((updatedPerson) => {
+						setPersons(
+							persons.map((person) =>
+								person.id === id ? updatedPerson : person
+							)
+						);
+						setNewName('');
+						setNumber('');
+					});
+			}
 			return;
 		}
 		const newPerson = {
