@@ -8,6 +8,10 @@ function generateId() {
 	return Math.floor(Math.random() * 100000 + 1);
 }
 
+function checkIfNameExists(name) {
+	return persons.find((person) => person.name === name);
+}
+
 const PORT = 3001;
 let persons = [
 	{
@@ -57,13 +61,20 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
 	const body = req.body;
-	const person = {
-		id: generateId(),
-		name: body.name,
-		number: body.number,
-	};
-	persons = persons.concat(person);
-	res.status(201).json(person);
+	if (!body.name && body.number) {
+		res.status(401).send({ error: 'name and number are required parameters' });
+	} else {
+		if (checkIfNameExists(body.name)) {
+			return res.status(401).send({ error: 'name must be unique' });
+		}
+		const person = {
+			id: generateId(),
+			name: body.name,
+			number: body.number,
+		};
+		persons = persons.concat(person);
+		res.status(201).json(person);
+	}
 });
 
 app.get('/info', (req, res) => {
