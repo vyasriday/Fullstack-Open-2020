@@ -1,6 +1,13 @@
 const express = require('express');
 const app = express();
 
+// json body response
+app.use(express.json());
+
+function generateId() {
+	return Math.floor(Math.random() * 100000 + 1);
+}
+
 const PORT = 3001;
 let persons = [
 	{
@@ -46,6 +53,17 @@ app.delete('/api/persons/:id', (req, res) => {
 		return res.json(person);
 	}
 	res.status(404).send({ error: 'Not found' });
+});
+
+app.post('/api/persons', (req, res) => {
+	const body = req.body;
+	const person = {
+		id: generateId(),
+		name: body.name,
+		number: body.number,
+	};
+	persons = persons.concat(person);
+	res.status(201).json(person);
 });
 
 app.get('/info', (req, res) => {
